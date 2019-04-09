@@ -7,7 +7,6 @@ import sys
 
 CREDPATH    = "twitter_cred.json"
 FOLLOWPATH  = "follow_ids.json"
-VERBOSE     = True
 
 class Reader:
 
@@ -21,11 +20,10 @@ class Reader:
     def _prepareFollowing(self):
         with open(FOLLOWPATH, 'r') as F:
             following = json.load(F)
-            if VERBOSE:
-                print('Following: ', end='')
-                for name in following.keys():
-                    print(name, end=', ')
-                print('')
+            print('Following: ', end='')
+            for name in following.keys():
+                print(name, end=', ')
+            print('')
             return list(following.values())
 
     def __init__(self):
@@ -43,15 +41,8 @@ class Reader:
         print("Sampling...")
         try:
             self.stream.filter(follow=self.follow_ids)
-            while True:
-                print('loop')
-                self.stream.sample()
-                time.sleep(1)
-
-
         except KeyboardInterrupt:
-            #self.lstnr.on_disconnect()
-            print(' Ending. ')
+            print(' Ending Stream. ')
         except Exception as e:
             self.lstnr.on_disconnect()
             print(e)
@@ -61,9 +52,9 @@ class Reader:
     def query(self, cmd, slow=False):
         c  = self.lstnr.db.cursor
         if 'drop' in cmd.lower():
-            i = input("Are you sure you wish to drop? Y/n")
+            i = input("Are you sure you wish to drop? Y/n ")
             if i is not 'Y':
-                print("exiting")
+                print("cancelling query")
                 return
         Z = c.execute(cmd)
         titles = [tuple[0] for tuple in Z.description]
@@ -78,11 +69,11 @@ class Reader:
         sys.exit()
 
     def tables(self):
-        print("\ntweet_tbl\tuser_tbl\tcoord_tbl\tplace_tbl\tbounding_box_tbl\thashtag_tbl\ttweet_2_hashtag_tbl\n")
+        print("\ntweet_tbl\tuser_tbl\tcoord_tbl\tplace_tbl\nbounding_box_tbl\thashtag_tbl\ttweet_2_hashtag_tbl\n")
 
     def help(self):
         print("\n\t\t\t\t\t\t~~WELCOME~~")
-        print("\t\t\t\t\t\tCommands:\n")
+        print("\t\t\t\t\t\t Commands:\n")
         print("> reader.run() \t\t\t\t\truns the twitter collection. Edit follow_ids.json to choose who to follow.")
         print("> reader.query( \"SQL_QUERY\", slow=False). \tSet the optional parameter slow to True for the output to be line by line, rather than a dump.")
         print("> reader.tables() \t\t\t\tgives you the tables")
