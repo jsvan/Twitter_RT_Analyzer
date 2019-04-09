@@ -73,7 +73,7 @@ class Reader:
 
     def help(self):
         print("\n\t\t\t\t\t\t~~WELCOME~~")
-        print("\t\t\t\t\t\t Commands:\n")
+        print("\t\t\t\t\t\tCommands:\n")
         print("> reader.run() \t\t\t\t\truns the twitter collection. Edit follow_ids.json to choose who to follow.")
         print("> reader.query( \"SQL_QUERY\", slow=False). \tSet the optional parameter slow to True for the output to be line by line, rather than a dump.")
         print("> reader.tables() \t\t\t\tgives you the tables")
