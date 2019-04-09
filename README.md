@@ -13,3 +13,25 @@ follow_ids.json should maintain json styling ({"":"","":""}, etc. For each tuple
 
 
 Im working on beefing up the built in sql queries to be usable to non tech people, so let me know if there's any functionality you'd like.
+
+
+
+Commands:
+
+* reader.run() 					
+  * runs the twitter collection. Edit follow_ids.json to choose who to follow.
+
+* reader.query( "SQL_QUERY", slow=False). 	
+  * Set the optional parameter slow to True for the output to be line by line, rather than a dump.
+
+* reader.tables() 				
+  * gives you the tables
+
+* reader.help() 				
+  * to see this menu again
+
+* \<ctrl\>+c 					
+  * terminates .run() and .query()
+
+* exit() 					
+  * terminates this program
