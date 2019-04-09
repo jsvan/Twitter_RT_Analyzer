@@ -1,6 +1,6 @@
 # Twitter_Stream_2_SQLite
 
-This is a simple tool to stream Twitter feeds into your sqlite database, built on python3. It runs from command line, and has a twitter schema premade which captures most information in tweets. I've only tested this on Ubuntu so good luck on your OS of choice.
+This is a simple tool to stream Twitter feeds into your sqlite database, built on python3. It runs from command line, and has a twitter schema premade which captures most information in tweets. 
 Edit the follow_ids.json to dictate which accounts to follow. Creds are in twitter_cred.json.
 
 follow_ids.json should maintain json styling ({"":"","":""}, etc. For each tuple, the first position is a human readable name just for us, and the second is twitter's numeric ID for that account. You can use https://tweeterid.com/ for example to find the correct id which Twitter will understand.
