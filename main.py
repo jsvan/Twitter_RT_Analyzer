@@ -27,27 +27,38 @@ class Reader:
             return list(following.values())
 
     def __init__(self):
-        self.auth = self._prepareCreds()
-        self.follow_ids = self._prepareFollowing()
-        self.api      = tweepy.API(self.auth)
-        self.lstnr    = MyListener.OutListener(self.api)
-        #self.stream   = tweepy.Stream(auth=self.api.auth, listener=self.lstnr)
-
+        self.auth   = self._prepareCreds()
+        self.api    = tweepy.API(self.auth)
+        self.lstnr  = MyListener.OutListener(self.api)
 
     def run(self):
-        self.lstnr.db.on_start()
-        self.stream   = tweepy.Stream(auth=self.api.auth, listener=self.lstnr)
+        repeat = True
+        while(repeat):
+            repeat = False
+            try:
+                self._to_run()
+            except ValueError as ve:
+                repeat = True
+            except Exception as e:
+                self.lstnr.on_disconnect()
+                print("CAUGHT EXCEPT")
+                print(e)
+                print(e.__doc__)
+                time.sleep(1)
 
-        print("Sampling...")
+
+    def _to_run(self):
+        self.lstnr.db.on_start()
+        self.stream     = tweepy.Stream(auth=self.api.auth, listener=self.lstnr)
+        self.follow_ids = self._prepareFollowing()
         try:
             self.stream.filter(follow=self.follow_ids)
         except KeyboardInterrupt:
             print(' Ending Stream. ')
-        except Exception as e:
-            self.lstnr.on_disconnect()
-            print(e)
-            print(e.__doc__)
-            time.sleep(1)
+        except ValueError as ve:
+            raise ve
+
+
 
     def query(self, cmd, slow=False):
         c  = self.lstnr.db.cursor

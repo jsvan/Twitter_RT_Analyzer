@@ -16,9 +16,12 @@ class TwitterDB:
     self.db, self.cursor      = self.on_start()
 
   def on_end(self):
-    z = self.cursor.execute("SELECT COUNT(*) FROM tweet_tbl;")
-    for i in z.fetchall():
-        print("We have", i[0], "tweets!")
+    try:
+        z = self.cursor.execute("SELECT COUNT(*) FROM tweet_tbl;")
+        for i in z.fetchall():
+            print("We have", i[0], "tweets!")
+    except sqlite3.ProgrammingError:
+        pass
     print("Disconnecting")
     self.db.close()
 
@@ -116,8 +119,8 @@ class TwitterDB:
             FOREIGN KEY(place)        REFERENCES place_tbl(id_str),
             FOREIGN KEY(quoted_status)  REFERENCES tweet_tbl(id_str)
     );''')
-    self.boundingBoxId = self.cursor.execute("SELECT Count(*) FROM bounding_box_tbl;")
-    self.coordId       = self.cursor.execute("SELECT Count(*) FROM coord_tbl;")
+    self.boundingBoxId = [x for x in self.cursor.execute("SELECT Count(*) FROM bounding_box_tbl;")][0][0]
+    self.coordId       = [x for x in self.cursor.execute("SELECT Count(*) FROM coord_tbl;")][0][0]
     return self.db, self.cursor
 
 
@@ -166,15 +169,15 @@ class TwitterDB:
   def _add_coord(self, coord_json):
     if coord_json is 'NULL' or not coord_json:
         return 'NULL'
-    coordId +=1
+    self.coordId +=1
     cmd = '''
         INSERT OR IGNORE INTO coord_tbl VALUES(
             ?, ?, ?
         );'''
-    self.cursor.execute(cmd, (coordId,
+    self.cursor.execute(cmd, (self.coordId,
                     coord_json[0],
                     coord_json[1]))
-    return coordId
+    return self.coordId
 
   def _add_user(self, user_json):
     if user_json is 'NULL' or not user_json:
@@ -240,7 +243,5 @@ class TwitterDB:
 
   def _add_tweet_2_hashtags(self, id_str, hashtag_list):
     cmd = "INSERT OR IGNORE INTO tweet_2_hashtag_tbl VALUES( NULL, ?, ?);"
-    print('FOUND HASHTAGS: ', hashtag_list)
     for hashtag in hashtag_list:
-        print(hashtag)
         self.cursor.execute(cmd, ( id_str, self._add_hashtag(hashtag)))
