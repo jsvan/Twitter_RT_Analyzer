@@ -79,9 +79,10 @@ class Reader:
     def help(self):
         print("\n\t\t\t\t\t\t~~WELCOME~~")
         print("\t\t\t\t\t\tCommands:\n")
-        print(">>> reader.run() \t\t\t\truns the twitter collection. Edit follow_ids.json to choose who to follow.")
-        print(">>> reader.run(growRTs=True) \t\t\t...will expand on the list of who it follows to include retweeters of the initial accounts. ")
-        print(">>> reader.query( \"SQL_QUERY\", slow=False). \tSet the optional parameter slow to True for the output to be line by line, rather than a dump.")
+        print(">>> reader.run( growRTs=False ) \t\t\truns the twitter collection. Edit follow_ids.json to choose who to follow. ...")
+        print("\t\t\t\t\t\t\t...Optional parameter growRTs, if True, will expand on the list of")
+        print("\t\t\t\t\t\t\t...who it follows to include retweeters of the initial accounts. ")
+        print(">>> reader.query( \"SQL_QUERY\", slow=False ). \tSet the optional parameter slow to True for the output to be line by line, rather than a dump.")
         print(">>> reader.tables() \t\t\t\tgives you the tables")
         print(">>> reader.help() \t\t\t\tto see this menu again")
         print(">>> <ctrl>+c \t\t\t\t\tterminates .run() and .query()")
