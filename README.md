@@ -7,7 +7,8 @@ follow_ids.json should maintain json styling ({"":"","":""}, etc. For each tuple
 
 1. Git clone the project
 2. Edit createCredentials.py, then run "python3 createCredentials.py"
-3. Edit follow_id.json to include who you want to follow
+3. Edit tweet_quellen.json to include accounts, which if somebody retweets them, we follow that person too.
+3. Edit retweeters_ids.json to include who you want to follow. You must make sure it includes tweet_quellen people as well.
 4. Run "python3 -i main.py"
 5. Available commands are printed to screen.
 
