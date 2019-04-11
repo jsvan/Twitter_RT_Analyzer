@@ -34,7 +34,7 @@ class OutListener(StreamListener):
                     print("~~~ *** ~~~ ^^^", end='')
                     return False  #END THIS STREAM, Updates Following list
         except Exception as e:
-            self.print_status(status._json)
+            self.print_status(status._json, debug=True)
             print(e)
             print(e.__doc__)
             print("onstatus")
@@ -53,7 +53,7 @@ class OutListener(StreamListener):
         self.db.on_end()
         print('Disconnected')
 
-    def print_status(self, toPrint, spacing=0):
+    def print_status(self, toPrint, debug=False, spacing=0):
         for k in toPrint.keys():
             val = toPrint[k]
             if type(val) is dict:
@@ -65,9 +65,15 @@ class OutListener(StreamListener):
                     if type(itm) is dict:
                         self.print_status(itm, spacing+4)
                     else:
-                        print(' '*spacing, k,': ', itm)
+                        if debug:
+                            print(' '*spacing, k,': ', itm, type(itm))
+                        else:
+                            print(' '*spacing, k,': ', itm)
             else:
-                print(' '*spacing, k, ': ', val)
+                if debug:
+                    print(' '*spacing, k, ': ', val, type(val))
+                else:
+                    print(' '*spacing, k, ': ', val)
 
     def on_error(self, status_code):
         if status_code is '420':

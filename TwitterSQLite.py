@@ -148,7 +148,12 @@ class TwitterDB:
         INSERT OR IGNORE INTO place_tbl VALUES(
             ?, ?, ?, ?, ?, ?
     );'''
-    self.cursor.execute(cmd, (self.json_val(str(place_json, 'id')), self.json_val(place_json, 'url'), self.json_val(place_json, 'place_type'), self.json_val(place_json, 'full_name'), self.json_val(place_json, 'country'), self._add_bounding_box(self.json_val(place_json, "bounding_box"))))
+    self.cursor.execute(cmd, (self.json_val(place_json, 'id'), 
+                              self.json_val(place_json, 'url'),
+                              self.json_val(place_json, 'place_type'),
+                              self.json_val(place_json, 'full_name'),
+                              self.json_val(place_json, 'country'),
+                              self._add_bounding_box(self.json_val(place_json, "bounding_box"))))
     return place_json['id_str']
 
   def _add_bounding_box(self, bb_json):
