@@ -38,6 +38,7 @@ class OutListener(StreamListener):
             print(e)
             print(e.__doc__)
             print("onstatus")
+            return False
         print(' ~~~ *** ~~~ \n')
         time.sleep(2)
         return True
@@ -58,12 +59,12 @@ class OutListener(StreamListener):
             val = toPrint[k]
             if type(val) is dict:
                 print(' '*spacing, k,': ')
-                self.print_status(val, spacing+4)
+                self.print_status(val, debug, spacing+4)
             elif type(val) is list:
                 print(' '*spacing, k, ': ')
                 for itm in val:
                     if type(itm) is dict:
-                        self.print_status(itm, spacing+4)
+                        self.print_status(itm, debug, spacing+4)
                     else:
                         if debug:
                             print(' '*spacing, k,': ', itm, type(itm))
@@ -88,7 +89,7 @@ class OutListener(StreamListener):
            F.write('\n')
 
     def add_retweeters(self, status_json):
-        if "retweeted_status" in status_json and "id_str" in status_json["retweeted_status"] and status_json["retweeted_status"]["user"]["id_str"] in self.quellen:
+        if "retweeted_status" in status_json and "id_str" in status_json["retweeted_status"]["user"] and status_json["retweeted_status"]["user"]["id_str"] in self.quellen:
             name = status_json["user"]["screen_name"]
             id = status_json["user"]["id_str"]
             with open(self.RETWEETERSPATH, 'r+') as F:
