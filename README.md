@@ -18,9 +18,10 @@ Im working on beefing up the built in sql queries to be usable to non tech peopl
 
 Commands:
 
-* reader.run() 					
-  * runs the twitter collection. Edit follow_ids.json to choose who to follow.
-
+* reader.run(growRTs=False) 					
+  * runs the twitter collection. Edit follow_ids.json to choose who to follow.				
+  * Optional parameter growRTs, if True, will expand on the list of who it follows to include retweeters of the initial accounts. 
+  
 * reader.query( "SQL_QUERY", slow=False). 	
   * Set the optional parameter slow to True for the output to be line by line, rather than a dump.
 
