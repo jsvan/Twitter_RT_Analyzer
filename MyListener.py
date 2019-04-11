@@ -13,17 +13,27 @@ class OutListener(StreamListener):
     #
     db = TwitterSQLite.TwitterDB()
 
+
+    def initialize(self, quellenpath, retweeterspath):
+        self.QUELLENPATH     = quellenpath
+        self.RETWEETERSPATH  = retweeterspath
+        self.quellen = self._prepareFollowing(self.QUELLENPATH)
+        self.growRTs = False
+
+    def setRetweetersGrowth(self, toGrow):
+        self.growRTs = toGrow
+
     def on_status(self, status):
-        print("status received")
         print(status.text)
-        print("NAME:", status._json["user"]["screen_name"], '\n')
+        print("NAME:", status._json["user"]["screen_name"])
         #self.print_status(status._json)
         self.db.add_status(status._json, to_commit=True)
-        self.add_retweeters(status._json["user"]["screen_name"], status._json["user"]["id_str"])
-        print('\n ~~~ *** ~~~ \n\n')
         time.sleep(2)
-        if random.random() < 0.02:
-            raise ValueError('Time to update following list + restart')
+        if self.growRTs:
+            if self.add_retweeters(status._json) < 0.1:
+                print('\n ~~~ *** ~~~ \n\n')
+                return False  #END THIS STREAM, Updates Following list
+        print('\n ~~~ *** ~~~ \n\n')
         return True
 
     def on_exception(self, exception):
@@ -63,11 +73,23 @@ class OutListener(StreamListener):
            json.dump(status, F)
            F.write('\n')
 
-    def add_retweeters(self, name, id):
-        with open('follow_ids.json', 'r+') as F:
+    def add_retweeters(self, status_json):
+        if "retweeted_status" in status_json and status_json["retweeted_status"]["user"]["id_str"] in self.quellen:
+            name = status_json["user"]["screen_name"]
+            id = status_json["user"]["id_str"]
+            print("Adding", name, id)
+            with open(self.RETWEETERSPATH, 'r+') as F:
+                following = json.load(F)
+                if name not in following:
+                    print("ADDING", name, id)
+                    following[name] = id
+                F.seek(0)
+                json.dump(following, F)
+            return random.random()
+        else:
+            return 1
+
+    def _prepareFollowing(self, path):
+        with open(path, 'r') as F:
             following = json.load(F)
-            if name not in following:
-                print("ADDING", name, id)
-                following[name] = id
-            F.seek(0)
-            json.dump(following, F)
+        return list(following.values())
