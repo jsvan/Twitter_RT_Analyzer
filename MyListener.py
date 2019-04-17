@@ -27,7 +27,7 @@ class OutListener(StreamListener):
         try:
             print(status.text)
             print("NAME:", status._json["user"]["screen_name"], '\n')
-            #self.print_status(status._json)
+            self.print_status(status._json)
             self.db.add_status(status._json, to_commit=True)
             if self.growRTs:
                 if self.add_retweeters(status._json) < 0.1:
@@ -40,7 +40,7 @@ class OutListener(StreamListener):
             print("onstatus")
             return False
         print(' ~~~ *** ~~~ \n')
-        time.sleep(2)
+        time.sleep(1)
         return True
 
     def on_exception(self, exception):
